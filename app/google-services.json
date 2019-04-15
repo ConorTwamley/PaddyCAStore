@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "110763038670",
+    "firebase_url": "https://electronicstore-77bc4.firebaseio.com",
+    "project_id": "electronicstore-77bc4",
+    "storage_bucket": "electronicstore-77bc4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110763038670:android:ff418a791eb07b90",
+        "android_client_info": {
+          "package_name": "com.conor.electronicstoresoftwaredesignpatterns"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110763038670-22qctqs83nhr71hrqcmik9n9shrrjkrh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.conor.electronicstoresoftwaredesignpatterns",
+            "certificate_hash": "92c981b2a51bc8d46537a7d3e67320f187e53a36"
+          }
+        },
+        {
+          "client_id": "110763038670-omp8rlfpr8s6m0bgon14ju6n9r361g7m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_P03z7LBOWh2w7oSGKjHABkkoAO2KHpU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110763038670-omp8rlfpr8s6m0bgon14ju6n9r361g7m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110763038670:android:ede25c332c5b4a1a",
+        "android_client_info": {
+          "package_name": "com.conor.paddycastore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110763038670-omp8rlfpr8s6m0bgon14ju6n9r361g7m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_P03z7LBOWh2w7oSGKjHABkkoAO2KHpU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110763038670-omp8rlfpr8s6m0bgon14ju6n9r361g7m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
