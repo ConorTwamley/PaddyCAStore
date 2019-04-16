@@ -3,13 +3,13 @@ package com.conor.paddycastore.Model;
 public class Stock {
 
 //    String id;//Primary Key
-    String productName;
-    String manufacturer;
-    String category;
-    String price;
-    String quantity;
-    String description;
-    String image;
+    private String productName;
+    private String manufacturer;
+    private String category;
+    private String price;
+    private String quantity;
+    private String description;
+    private String image;
 
     public Stock() {
     }
