@@ -10,14 +10,14 @@ import com.conor.paddycastore.R;
 
 import java.util.List;
 
-public class StockViewHolder extends RecyclerView.ViewHolder {
+public class StockViewHolderAdmin extends RecyclerView.ViewHolder {
 
     private List<Stock> listData;
     public TextView tvProductName, tvProductPrice, tvProductDescription, tvProductCategory, tvProductManufacturer;
-    public ImageView productImage, addToCart;
+    public ImageView productImage, editProduct;
 
 
-    public StockViewHolder( View itemView) {
+    public StockViewHolderAdmin(View itemView) {
         super(itemView);
 
         tvProductName = (TextView)itemView.findViewById(R.id.tvProductName);
@@ -26,7 +26,7 @@ public class StockViewHolder extends RecyclerView.ViewHolder {
         tvProductDescription = (TextView)itemView.findViewById(R.id.tvProductDescription);
         tvProductCategory = (TextView)itemView.findViewById(R.id.tvProductCategory);
         tvProductManufacturer = (TextView)itemView.findViewById(R.id.tvProductManufacturer);
-        addToCart = (ImageView)itemView.findViewById(R.id.addToCart);
+        editProduct = (ImageView)itemView.findViewById(R.id.editProduct);
 
     }
 

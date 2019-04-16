@@ -1,27 +1,46 @@
 package com.conor.paddycastore;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.conor.paddycastore.Common.Common;
 import com.conor.paddycastore.Model.Stock;
-import com.conor.paddycastore.ViewHolder.StockViewHolder;
+import com.conor.paddycastore.ViewHolder.StockViewHolderAdmin;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import java.util.UUID;
 
 public class HomePageAdmin extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,11 +48,22 @@ public class HomePageAdmin extends AppCompatActivity
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
+    EditText etProductName, etProductPrice, etProductDescription, etProductCategory, etProductManufacturer;
+    ImageView productImage;
+    Button btnSelect;
+
     //Firebase
     FirebaseDatabase database;
     DatabaseReference stockList;
+    FirebaseStorage storage;
+    StorageReference storageReference;
 
-    FirebaseRecyclerAdapter<Stock, StockViewHolder> adapter;
+    FirebaseRecyclerAdapter<Stock, StockViewHolderAdmin> adapter;
+
+    Uri saveUri;
+    Stock newStock;
+
+    RelativeLayout rootLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +75,8 @@ public class HomePageAdmin extends AppCompatActivity
         //Firebase Init
         database = FirebaseDatabase.getInstance();
         stockList = database.getReference("Stock");
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
 
         //Load Food list
         recyclerView = (RecyclerView)findViewById(R.id.recycler_menu);
@@ -53,6 +85,7 @@ public class HomePageAdmin extends AppCompatActivity
         recyclerView.setLayoutManager(layoutManager);
 
         recyclerView.setAdapter(adapter);
+
 
         loadMenu();
         
@@ -67,14 +100,14 @@ public class HomePageAdmin extends AppCompatActivity
     }
 
     private void loadMenu() {
-        adapter = new FirebaseRecyclerAdapter<Stock, StockViewHolder>(
+        adapter = new FirebaseRecyclerAdapter<Stock, StockViewHolderAdmin>(
                 Stock.class,
-                R.layout.stock_item,
-                StockViewHolder.class,
+                R.layout.stock_item_admin,
+                StockViewHolderAdmin.class,
                 stockList)
         {
             @Override
-            protected void populateViewHolder(StockViewHolder viewHolder, Stock model, int position) {
+            protected void populateViewHolder(StockViewHolderAdmin viewHolder, Stock model, final int position) {
                 viewHolder.tvProductName.setText(model.getProductName());
                 viewHolder.tvProductCategory.setText(model.getCategory());
                 viewHolder.tvProductDescription.setText(model.getDescription());
@@ -82,11 +115,142 @@ public class HomePageAdmin extends AppCompatActivity
                 viewHolder.tvProductPrice.setText(model.getPrice());
                 Picasso.with(getBaseContext()).load(model.getImage())
                         .into(viewHolder.productImage);
+
+                viewHolder.editProduct.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        updateProduct(adapter.getRef(position).getKey(), adapter.getItem(position));
+                    }
+                });
             }
         };
 
         //Set Adapter
         recyclerView.setAdapter(adapter);
+    }
+
+    private void updateProduct(final String key, final Stock item) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomePageAdmin.this);
+        alertDialog.setTitle("Update Product");
+        alertDialog.setMessage("Please fill full information");
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View edit_product_layout = inflater.inflate(R.layout.activity_add_stock, null);
+
+        etProductName = edit_product_layout.findViewById(R.id.etProductName);
+        etProductCategory = edit_product_layout.findViewById(R.id.etCategory);
+        etProductDescription = edit_product_layout.findViewById(R.id.etDescription);
+        etProductManufacturer = edit_product_layout.findViewById(R.id.etManufacturer);
+        etProductPrice = edit_product_layout.findViewById(R.id.etPrice);
+        btnSelect = edit_product_layout.findViewById(R.id.btnSelect);
+        productImage = edit_product_layout.findViewById(R.id.addImageView);
+
+        //Set default name
+        etProductName.setText(item.getProductName());
+        etProductCategory.setText(item.getCategory());
+        etProductManufacturer.setText(item.getManufacturer());
+        etProductDescription.setText(item.getDescription());
+        etProductPrice.setText(item.getPrice());
+        Picasso.with(getBaseContext()).load(item.getImage())
+                .into(productImage);
+
+
+        //Event for button
+        btnSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseImage(); //let user select image from the gallery and save the URI of the image
+            }
+        });
+
+        alertDialog.setView(edit_product_layout);
+        alertDialog.setIcon(R.drawable.ic_edit_black_24dp);
+
+        //Set button
+        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+                changeImage(item, key);
+            }
+        });
+        alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void chooseImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), Common.PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == Common.PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null)
+        {
+            saveUri = data.getData();
+            btnSelect.setText("Image Selected!");
+            Picasso.with(getBaseContext()).load(data.getData())
+                    .into(productImage);
+        }
+    }
+
+    private void changeImage(final Stock item, final String key) {
+        if(saveUri != null)
+        {
+            final ProgressDialog mDialog = new ProgressDialog(this);
+            mDialog.setMessage("Uploading...");
+            mDialog.show();
+
+            String imageName = UUID.randomUUID().toString();
+            final StorageReference imageFolder = storageReference.child("images/"+imageName);
+            imageFolder.putFile(saveUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            mDialog.dismiss();
+                            Toast.makeText(HomePageAdmin.this, "Uploaded!! ", Toast.LENGTH_SHORT).show();
+                            imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    //Update information
+                                    item.setProductName(etProductName.getText().toString());
+                                    item.setPrice(etProductPrice.getText().toString());
+                                    item.setDescription(etProductDescription.getText().toString());
+                                    item.setCategory(etProductCategory.getText().toString());
+                                    item.setManufacturer(etProductManufacturer.getText().toString());
+                                    item.setImage(uri.toString());
+                                    stockList.child(key).setValue(item);
+                                    loadMenu();
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            mDialog.dismiss();
+                            Toast.makeText(HomePageAdmin.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            mDialog.setMessage("Uploaded "+progress+ "%");
+                        }
+                    });
+        }
     }
 
     @Override
