@@ -132,11 +132,11 @@ public class HomePageUser extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_searchManufacturer) {
-            Intent intent = new Intent(HomePageUser.this, SearchTitleActivity.class);
+            Intent intent = new Intent(HomePageUser.this, SearchManufacturerActivity.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_searchPrice) {
-            Intent intent = new Intent(HomePageUser.this, SearchTitleActivity.class);
+            Intent intent = new Intent(HomePageUser.this, SearchPriceActivity.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_log_out) {
