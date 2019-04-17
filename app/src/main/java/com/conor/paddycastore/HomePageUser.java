@@ -17,7 +17,7 @@ import com.conor.paddycastore.Model.Stock;
 import com.conor.paddycastore.ViewHolder.StockViewHolderUser;
 import com.conor.paddycastore.searches.SearchManufacturerActivity;
 import com.conor.paddycastore.searches.SearchPriceActivity;
-import com.conor.paddycastore.searches.SearchTitleActivity;
+import com.conor.paddycastore.searches.SearchProductNameActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -131,7 +131,7 @@ public class HomePageUser extends AppCompatActivity
         } else if (id == R.id.nav_cart) {
 
         } else if (id == R.id.nav_searchTitle) {
-            Intent intent = new Intent(HomePageUser.this, SearchTitleActivity.class);
+            Intent intent = new Intent(HomePageUser.this, SearchProductNameActivity.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_searchManufacturer) {

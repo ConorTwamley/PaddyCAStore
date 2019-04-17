@@ -31,7 +31,7 @@
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
             android:hint="Username"
-            android:text="testing"
+            android:text="conortwamley"
             android:id="@+id/etUsername"
             android:inputType="text"
             android:textSize="30sp"
@@ -44,11 +44,10 @@
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
             android:hint="Password"
-            android:text="test123"
+            android:text="conor123"
             android:id="@+id/etPassword"
             android:inputType="textPassword"
             android:textSize="30sp"
-
             />
 
     </LinearLayout>

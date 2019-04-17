@@ -34,7 +34,17 @@
             android:id="@+id/etUsername"
             android:inputType="text"
             android:textSize="30sp"
+            />
 
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
+            android:hint="Name"
+            android:id="@+id/etName"
+            android:inputType="text"
+            android:textSize="30sp"
             />
 
         <EditText
@@ -46,7 +56,6 @@
             android:id="@+id/etPassword"
             android:inputType="textPassword"
             android:textSize="30sp"
-
             />
 
     </LinearLayout>

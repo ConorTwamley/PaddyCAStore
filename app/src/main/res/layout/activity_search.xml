@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".searches.SearchTitleActivity">
+    tools:context=".searches.SearchProductNameActivity">
 
     <com.mancj.materialsearchbar.MaterialSearchBar
         android:id="@+id/searchStock"

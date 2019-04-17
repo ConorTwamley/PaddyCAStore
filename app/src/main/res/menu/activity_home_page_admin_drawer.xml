@@ -22,6 +22,18 @@
         android:title="Orders" />
 
     <item
+        android:id="@+id/nav_searchPrevOrders"
+        android:icon="@drawable/ic_history_black_24dp"
+        android:iconTint="@android:color/white"
+        android:title="Previous Orders" />
+
+    <item
+        android:id="@+id/nav_searchCustomers"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:iconTint="@android:color/white"
+        android:title="Search Customers" />
+
+    <item
         android:id="@+id/nav_log_out"
         android:icon="@drawable/ic_clear_black_24dp"
         android:iconTint="@android:color/white"

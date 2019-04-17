@@ -2,15 +2,17 @@ package com.conor.paddycastore.Model;
 
 public class User {
 
-    String username;//Primary key
-    String password;
-    String isStaff;
+    private String username;//Primary key
+    private String password;
+    private String isStaff;
+    private String name;
 
     public User() {
     }
 
-    public User(String password) {
+    public User(String password, String name) {
         this.password = password;
+        this.name = name;
         this.isStaff = "false";
     }
 
@@ -28,6 +30,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getIsStaff() {

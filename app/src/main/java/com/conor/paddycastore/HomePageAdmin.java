@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.conor.paddycastore.Common.Common;
 import com.conor.paddycastore.Model.Stock;
 import com.conor.paddycastore.ViewHolder.StockViewHolderAdmin;
+import com.conor.paddycastore.searches.SearchCustomers;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -298,6 +299,13 @@ public class HomePageAdmin extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_orders) {
+
+        } else if (id == R.id.nav_searchCustomers) {
+
+            Intent intent = new Intent(HomePageAdmin.this, SearchCustomers.class);
+            startActivity(intent);
+
+        } else if (id == R.id.nav_searchPrevOrders) {
 
         } else if (id == R.id.nav_log_out) {
             Intent logout = new Intent(HomePageAdmin.this, MainActivity.class);

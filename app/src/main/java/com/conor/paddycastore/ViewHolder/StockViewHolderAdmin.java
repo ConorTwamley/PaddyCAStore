@@ -15,7 +15,7 @@ public class StockViewHolderAdmin extends RecyclerView.ViewHolder {
     private List<Stock> listData;
     public TextView tvProductName, tvProductPrice, tvProductDescription, tvProductCategory, tvProductManufacturer;
     public ImageView productImage, editProduct;
-
+    public TextView username, name;
 
     public StockViewHolderAdmin(View itemView) {
         super(itemView);
@@ -27,6 +27,10 @@ public class StockViewHolderAdmin extends RecyclerView.ViewHolder {
         tvProductCategory = (TextView)itemView.findViewById(R.id.tvProductCategory);
         tvProductManufacturer = (TextView)itemView.findViewById(R.id.tvProductManufacturer);
         editProduct = (ImageView)itemView.findViewById(R.id.editProduct);
+
+        //Search views
+//        username = itemView.findViewById(R.id.usernameSearchUser);
+        name = itemView.findViewById(R.id.nameSearchUser);
 
     }
 

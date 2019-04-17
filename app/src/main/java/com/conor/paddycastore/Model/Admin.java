@@ -11,11 +11,6 @@ public class Admin extends User {
         this.isStaff = "true";
     }
 
-    public Admin(String password, String isStaff) {
-        super(password);
-        this.isStaff = isStaff;
-    }
-    
     public String getIsStaff() {
         return isStaff;
     }

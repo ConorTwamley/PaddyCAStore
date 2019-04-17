@@ -26,6 +26,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         etUsername = (EditText)findViewById(R.id.etUsername);
+        etName = (EditText)findViewById(R.id.etName);
         etPassword = (EditText)findViewById(R.id.etPassword);
         btnSignUp = (Button)findViewById(R.id.btnSignUp);
 
@@ -51,7 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                         else{
                             mDialog.dismiss();
-                            User user = new User(etPassword.getText().toString());
+                            User user = new User(etPassword.getText().toString(), etName.getText().toString());
                             table_user.child(etUsername.getText().toString()).setValue(user);
                             Toast.makeText(RegisterActivity.this, "Sign up successful", Toast.LENGTH_SHORT).show();
                             finish();
