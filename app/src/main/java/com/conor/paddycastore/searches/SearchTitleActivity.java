@@ -1,17 +1,24 @@
-package com.conor.paddycastore;
+package com.conor.paddycastore.searches;
 
-import android.os.Bundle;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.EditText;
 
+import com.conor.paddycastore.Common.Common;
 import com.conor.paddycastore.Model.Stock;
+import com.conor.paddycastore.R;
 import com.conor.paddycastore.ViewHolder.StockViewHolderUser;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,7 +30,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchPriceActivity extends AppCompatActivity {
+public class SearchTitleActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -55,7 +62,7 @@ public class SearchPriceActivity extends AppCompatActivity {
 
         //Search
         materialSearchBar = (MaterialSearchBar)findViewById(R.id.searchStock);
-        materialSearchBar.setHint("Enter price");
+        materialSearchBar.setHint("Enter product name");
         loadSuggest(); //write function to load Suggest from Firebase
         materialSearchBar.setLastSuggestions(suggestList);
         materialSearchBar.setCardViewElevation(10);
@@ -68,6 +75,7 @@ public class SearchPriceActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //When user type their text, we will change suggest list
+
                 List<String> suggest = new ArrayList<String>();
                 for(String search:suggestList)
                 {
@@ -87,6 +95,7 @@ public class SearchPriceActivity extends AppCompatActivity {
         materialSearchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
+
                 if(!enabled)
                     recyclerView.setAdapter(adapter);
             }
@@ -94,10 +103,12 @@ public class SearchPriceActivity extends AppCompatActivity {
             @Override
             public void onSearchConfirmed(CharSequence text) {
                 startSearch(text);
+
             }
 
             @Override
             public void onButtonClicked(int buttonCode) {
+
             }
         });
 
@@ -110,7 +121,7 @@ public class SearchPriceActivity extends AppCompatActivity {
                 Stock.class,
                 R.layout.search_list_stock,
                 StockViewHolderUser.class,
-                stockList.orderByChild("price")
+                stockList.orderByChild("productName")
                         .equalTo(text.toString())
         ) {
             @Override
@@ -129,14 +140,14 @@ public class SearchPriceActivity extends AppCompatActivity {
     }
 
     private void loadSuggest() {
-        stockList.orderByChild("price")
+        stockList.orderByChild("productName")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot postSnapshot:dataSnapshot.getChildren())
                         {
                             Stock item = postSnapshot.getValue(Stock.class);
-                            suggestList.add("€" + item.getPrice() + " - " + item.getProductName());//Add name of product to suggest List
+                            suggestList.add(item.getProductName()); //Add name of food to suggest List
                         }
                     }
 

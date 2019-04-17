@@ -1,4 +1,4 @@
-package com.conor.paddycastore;
+package com.conor.paddycastore.searches;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 
 import com.conor.paddycastore.Model.Stock;
+import com.conor.paddycastore.R;
 import com.conor.paddycastore.ViewHolder.StockViewHolderUser;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DataSnapshot;
@@ -23,7 +24,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchManufacturerActivity extends AppCompatActivity {
+public class SearchPriceActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -55,7 +56,7 @@ public class SearchManufacturerActivity extends AppCompatActivity {
 
         //Search
         materialSearchBar = (MaterialSearchBar)findViewById(R.id.searchStock);
-        materialSearchBar.setHint("Enter Manufacturer");
+        materialSearchBar.setHint("Enter price");
         loadSuggest(); //write function to load Suggest from Firebase
         materialSearchBar.setLastSuggestions(suggestList);
         materialSearchBar.setCardViewElevation(10);
@@ -110,7 +111,7 @@ public class SearchManufacturerActivity extends AppCompatActivity {
                 Stock.class,
                 R.layout.search_list_stock,
                 StockViewHolderUser.class,
-                stockList.orderByChild("manufacturer")
+                stockList.orderByChild("price")
                         .equalTo(text.toString())
         ) {
             @Override
@@ -129,14 +130,14 @@ public class SearchManufacturerActivity extends AppCompatActivity {
     }
 
     private void loadSuggest() {
-        stockList.orderByChild("manufacturer")
+        stockList.orderByChild("price")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot postSnapshot:dataSnapshot.getChildren())
                         {
                             Stock item = postSnapshot.getValue(Stock.class);
-                            suggestList.add(item.getManufacturer()); //Add name of product to suggest List
+                            suggestList.add("€" + item.getPrice() + " - " + item.getProductName());//Add name of product to suggest List
                         }
                     }
 

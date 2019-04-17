@@ -15,6 +15,9 @@ import android.view.MenuItem;
 
 import com.conor.paddycastore.Model.Stock;
 import com.conor.paddycastore.ViewHolder.StockViewHolderUser;
+import com.conor.paddycastore.searches.SearchManufacturerActivity;
+import com.conor.paddycastore.searches.SearchPriceActivity;
+import com.conor.paddycastore.searches.SearchTitleActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

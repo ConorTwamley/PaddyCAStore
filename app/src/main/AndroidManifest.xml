@@ -20,7 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SearchTitleActivity"></activity>
+        <activity android:name=".searches.SearchTitleActivity"></activity>
         <activity android:name=".AddStock" />
         <activity
             android:name=".HomePageUser"
@@ -32,8 +32,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".SearchManufacturerActivity" />
-        <activity android:name=".SearchPriceActivity" />
+        <activity android:name=".searches.SearchManufacturerActivity" />
+        <activity android:name=".searches.SearchPriceActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.conor.paddycastore;
+package com.conor.paddycastore.Common;
 
 import android.view.View;
 
