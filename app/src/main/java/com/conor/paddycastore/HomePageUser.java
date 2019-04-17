@@ -2,11 +2,8 @@ package com.conor.paddycastore;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.conor.paddycastore.Model.Stock;
-import com.conor.paddycastore.ViewHolder.StockViewHolderAdmin;
 import com.conor.paddycastore.ViewHolder.StockViewHolderUser;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -131,9 +127,17 @@ public class HomePageUser extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_cart) {
 
-        } else if (id == R.id.nav_add_stock) {
+        } else if (id == R.id.nav_searchTitle) {
+            Intent intent = new Intent(HomePageUser.this, SearchTitleActivity.class);
+            startActivity(intent);
 
-        } else if (id == R.id.nav_orders) {
+        } else if (id == R.id.nav_searchManufacturer) {
+            Intent intent = new Intent(HomePageUser.this, SearchTitleActivity.class);
+            startActivity(intent);
+
+        } else if (id == R.id.nav_searchPrice) {
+            Intent intent = new Intent(HomePageUser.this, SearchTitleActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_log_out) {
 

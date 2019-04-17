@@ -9,6 +9,16 @@ import com.conor.paddycastore.Model.User;
 public class Common {
 
     public static User currentUser;
+    public static String currentStock;
+
+    public static String getCurrentStock() {
+        return currentStock;
+    }
+
+    public static void setCurrentStock(String currentStock) {
+        Common.currentStock = currentStock;
+    }
+
     public static String topicName = "News";
     public static String venueSelected = "";
     public static final int PICK_IMAGE_REQUEST = 71;

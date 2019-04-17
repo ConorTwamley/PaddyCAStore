@@ -14,7 +14,8 @@ public class StockViewHolderUser extends RecyclerView.ViewHolder {
 
     private List<Stock> listData;
     public TextView tvProductName, tvProductPrice, tvProductDescription, tvProductCategory, tvProductManufacturer;
-    public ImageView productImage, addToCart;
+    public TextView searchProductName, searchProductPrice, searchProductDescription, searchProductCategory, searchProductManufacturer;
+    public ImageView productImage, addToCart, searchImageProduct;
 
 
     public StockViewHolderUser(View itemView) {
@@ -27,6 +28,15 @@ public class StockViewHolderUser extends RecyclerView.ViewHolder {
         tvProductCategory = (TextView)itemView.findViewById(R.id.tvProductCategory);
         tvProductManufacturer = (TextView)itemView.findViewById(R.id.tvProductManufacturer);
         addToCart = (ImageView)itemView.findViewById(R.id.addToCart);
+
+        //Search view
+
+        searchProductName = (TextView)itemView.findViewById(R.id.titleSearchStock);
+        searchProductPrice = (TextView)itemView.findViewById(R.id.priceSearchItem);
+        searchProductDescription = (TextView)itemView.findViewById(R.id.descriptionSearchItem);
+        searchProductCategory = (TextView)itemView.findViewById(R.id.categorySearchStock);
+        searchProductManufacturer = (TextView)itemView.findViewById(R.id.manufacturerSearchItem);
+        searchImageProduct = (ImageView)itemView.findViewById(R.id.stockImage);
     }
 
 }

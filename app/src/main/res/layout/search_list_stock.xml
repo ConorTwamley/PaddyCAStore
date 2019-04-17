@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/stockImage"
+        android:layout_width="90dp"
+        android:layout_height="120dp"
+        android:padding="2dp"
+        android:src="@mipmap/ic_launcher_round"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/titleSearchStock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Product Name"
+                android:textAppearance="@style/TextAppearance.AppCompat"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/categorySearchStock"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Product category"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/manufacturerSearchItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Manufacturer"
+                android:textAppearance="@style/TextAppearance.AppCompat"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/priceSearchItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Product price"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/descriptionSearchItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Product description"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

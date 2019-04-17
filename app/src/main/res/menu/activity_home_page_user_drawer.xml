@@ -8,6 +8,22 @@
             android:id="@+id/nav_cart"
             android:icon="@drawable/ic_shopping_cart_black_24dp"
             android:title="Cart" />
+
+        <item
+            android:id="@+id/nav_searchTitle"
+            android:icon="@drawable/ic_search_black_24dp"
+            android:title="Search by Title" />
+
+        <item
+            android:id="@+id/nav_searchManufacturer"
+            android:icon="@drawable/ic_search_black_24dp"
+            android:title="Search by Manufacturer" />
+
+        <item
+            android:id="@+id/nav_searchPrice"
+            android:icon="@drawable/ic_search_black_24dp"
+            android:title="Search by Price" />
+
         <item
             android:id="@+id/nav_log_out"
             android:icon="@drawable/ic_clear_black_24dp"
