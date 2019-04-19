@@ -20,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".searches.SearchProductNameActivity"></activity>
+        <activity android:name=".ProductDetail"></activity>
+        <activity android:name=".searches.SearchProductNameActivity" />
         <activity android:name=".AddStock" />
         <activity
             android:name=".HomePageUser"

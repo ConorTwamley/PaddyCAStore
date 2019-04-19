@@ -2,6 +2,7 @@ package com.conor.paddycastore;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.design.widget.NavigationView;
@@ -12,19 +13,35 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RatingBar;
+import android.widget.Toast;
 
+import com.conor.paddycastore.Common.Common;
+import com.conor.paddycastore.Interfaces.ItemClickListener;
+import com.conor.paddycastore.Model.Rating;
 import com.conor.paddycastore.Model.Stock;
 import com.conor.paddycastore.ViewHolder.StockViewHolderUser;
 import com.conor.paddycastore.searches.SearchManufacturerActivity;
 import com.conor.paddycastore.searches.SearchPriceActivity;
 import com.conor.paddycastore.searches.SearchProductNameActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.stepstone.apprating.AppRatingDialog;
+import com.stepstone.apprating.listener.RatingDialogListener;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 public class HomePageUser extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, RatingDialogListener {
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -32,6 +49,10 @@ public class HomePageUser extends AppCompatActivity
     //Firebase
     FirebaseDatabase database;
     DatabaseReference stockList;
+    DatabaseReference ratingTbl;
+
+    String productId="";
+    Float ratingBar = 0.00f;
 
     FirebaseRecyclerAdapter<Stock, StockViewHolderUser> adapter;
     @Override
@@ -44,6 +65,7 @@ public class HomePageUser extends AppCompatActivity
         //Firebase Init
         database = FirebaseDatabase.getInstance();
         stockList = database.getReference("Stock");
+        ratingTbl = database.getReference("Rating");
 
         //Load Food list
         recyclerView = (RecyclerView)findViewById(R.id.recycler_menu);
@@ -70,10 +92,10 @@ public class HomePageUser extends AppCompatActivity
                 Stock.class,
                 R.layout.stock_item_user,
                 StockViewHolderUser.class,
-                stockList)
-        {
+                stockList
+        ) {
             @Override
-            protected void populateViewHolder(StockViewHolderUser viewHolder, Stock model, int position) {
+            protected void populateViewHolder(StockViewHolderUser viewHolder, Stock model, final int position) {
                 viewHolder.tvProductName.setText(model.getProductName());
                 viewHolder.tvProductCategory.setText(model.getCategory());
                 viewHolder.tvProductDescription.setText(model.getDescription());
@@ -81,12 +103,52 @@ public class HomePageUser extends AppCompatActivity
                 viewHolder.tvProductPrice.setText(model.getPrice());
                 Picasso.with(getBaseContext()).load(model.getImage())
                         .into(viewHolder.productImage);
+
+                viewHolder.setItemClickListener(new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position, boolean isLongClick) {
+                        //Start Activity
+                        Intent drinkDetail = new Intent(HomePageUser.this, ProductDetail.class);
+                        drinkDetail.putExtra("ProductId", adapter.getRef(position).getKey());
+                        startActivity(drinkDetail);
+                    }
+                });
+
+                viewHolder.reviewProduct.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        productId = adapter.getRef(position).getKey();
+                        showRatingDialog();
+                    }
+                });
+
             }
         };
 
         //Set Adapter
         recyclerView.setAdapter(adapter);
     }
+
+    private void showRatingDialog() {
+        new AppRatingDialog.Builder()
+                .setPositiveButtonText("Submit")
+                .setNegativeButtonText("Cancel")
+                .setNoteDescriptions(Arrays.asList("Very Bad", "Not Good", "Ok", "Very Good", "Excellent"))
+                .setDefaultRating(1)
+                .setTitle("Rate this product")
+                .setDescription("Please select a rating and give some feedback")
+                .setTitleTextColor(R.color.colorPrimary)
+                .setDescriptionTextColor(R.color.colorPrimary)
+                .setHint("Please write your comments here...")
+                .setHintTextColor(android.R.color.white)
+                .setCommentTextColor(R.color.text_rating)
+                .setCommentBackgroundColor(R.color.colorPrimaryDark)
+                .setWindowAnimation(R.style.RatingDialogFadeAnim)
+                .create(HomePageUser.this)
+                .show();
+    }
+
+
 
     @Override
     public void onBackPressed() {
@@ -152,5 +214,44 @@ public class HomePageUser extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    //Sending Rating to firebase
+    @Override
+    public void onPositiveButtonClicked(int value, @NotNull String comments) {
+
+        //Get rating and upload to firebase
+        final Rating rating = new Rating(Common.currentUser.getUsername(),
+                productId,
+                String.valueOf(value),
+                comments);
+        ratingTbl.child(Common.currentUser.getUsername()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.child(Common.currentUser.getUsername()).exists()) {
+                    ratingTbl.child(String.valueOf(System.currentTimeMillis()))
+                            .setValue(rating);
+                }
+                else {
+                    //Update new value
+                    ratingTbl.child(String.valueOf(System.currentTimeMillis()))
+                            .setValue(rating);
+
+                }
+
+                Toast.makeText(HomePageUser.this, "Thank you for submitting a rating!!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onNegativeButtonClicked() {
+
     }
 }
