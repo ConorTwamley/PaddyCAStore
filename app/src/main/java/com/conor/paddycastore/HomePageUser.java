@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
@@ -45,6 +46,11 @@ public class HomePageUser extends AppCompatActivity
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
+    RecyclerView.LayoutManager mylayoutManager;
+    RecyclerView.LayoutManager manufacturerLayout;
+    RecyclerView.LayoutManager pricelayoutManager;
+
+    Button sortTitle, sortManufacturer, sortPrice;
 
     //Firebase
     FirebaseDatabase database;
@@ -52,7 +58,6 @@ public class HomePageUser extends AppCompatActivity
     DatabaseReference ratingTbl;
 
     String productId="";
-    Float ratingBar = 0.00f;
 
     FirebaseRecyclerAdapter<Stock, StockViewHolderUser> adapter;
     @Override
@@ -61,6 +66,10 @@ public class HomePageUser extends AppCompatActivity
         setContentView(R.layout.activity_home_page_user);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        sortTitle = (Button)findViewById(R.id.sortByTitle);
+        sortManufacturer = (Button)findViewById(R.id.sortByManufacturer);
+        sortPrice = (Button)findViewById(R.id.sortByPrice);
 
         //Firebase Init
         database = FirebaseDatabase.getInstance();
@@ -77,6 +86,39 @@ public class HomePageUser extends AppCompatActivity
 
         loadMenu();
 
+        sortTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mylayoutManager = new LinearLayoutManager(HomePageUser.this);
+                ((LinearLayoutManager) mylayoutManager).setReverseLayout(true);
+                ((LinearLayoutManager) mylayoutManager).setStackFromEnd(true);
+                recyclerView.setLayoutManager(mylayoutManager);
+                loadMenu();
+            }
+        });
+
+        sortManufacturer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manufacturerLayout = new LinearLayoutManager(HomePageUser.this);
+                ((LinearLayoutManager) manufacturerLayout).setReverseLayout(true);
+                ((LinearLayoutManager) manufacturerLayout).setStackFromEnd(true);
+                recyclerView.setLayoutManager(manufacturerLayout);
+                loadMenuManufacturerAscending();
+            }
+        });
+
+        sortPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pricelayoutManager = new LinearLayoutManager(HomePageUser.this);
+                ((LinearLayoutManager) pricelayoutManager).setReverseLayout(true);
+                ((LinearLayoutManager) pricelayoutManager).setStackFromEnd(true);
+                recyclerView.setLayoutManager(pricelayoutManager);
+                loadMenuPriceAscending();
+            }
+        });
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -85,6 +127,90 @@ public class HomePageUser extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void loadMenuPriceAscending() {
+        adapter = new FirebaseRecyclerAdapter<Stock, StockViewHolderUser>(
+                Stock.class,
+                R.layout.stock_item_user,
+                StockViewHolderUser.class,
+                stockList.orderByChild("price")
+        ) {
+            @Override
+            protected void populateViewHolder(StockViewHolderUser viewHolder, Stock model, final int position) {
+                viewHolder.tvProductName.setText(model.getProductName());
+                viewHolder.tvProductCategory.setText(model.getCategory());
+                viewHolder.tvProductDescription.setText(model.getDescription());
+                viewHolder.tvProductManufacturer.setText(model.getManufacturer());
+                viewHolder.tvProductPrice.setText(model.getPrice());
+                Picasso.with(getBaseContext()).load(model.getImage())
+                        .into(viewHolder.productImage);
+
+                viewHolder.setItemClickListener(new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position, boolean isLongClick) {
+                        //Start Activity
+                        Intent drinkDetail = new Intent(HomePageUser.this, ProductDetail.class);
+                        drinkDetail.putExtra("ProductId", adapter.getRef(position).getKey());
+                        startActivity(drinkDetail);
+                    }
+                });
+
+                viewHolder.reviewProduct.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        productId = adapter.getRef(position).getKey();
+                        showRatingDialog();
+                    }
+                });
+
+            }
+        };
+
+        //Set Adapter
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void loadMenuManufacturerAscending() {
+        adapter = new FirebaseRecyclerAdapter<Stock, StockViewHolderUser>(
+                Stock.class,
+                R.layout.stock_item_user,
+                StockViewHolderUser.class,
+                stockList.orderByChild("manufacturer")
+        ) {
+            @Override
+            protected void populateViewHolder(StockViewHolderUser viewHolder, Stock model, final int position) {
+                viewHolder.tvProductName.setText(model.getProductName());
+                viewHolder.tvProductCategory.setText(model.getCategory());
+                viewHolder.tvProductDescription.setText(model.getDescription());
+                viewHolder.tvProductManufacturer.setText(model.getManufacturer());
+                viewHolder.tvProductPrice.setText(model.getPrice());
+                Picasso.with(getBaseContext()).load(model.getImage())
+                        .into(viewHolder.productImage);
+
+                viewHolder.setItemClickListener(new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position, boolean isLongClick) {
+                        //Start Activity
+                        Intent drinkDetail = new Intent(HomePageUser.this, ProductDetail.class);
+                        drinkDetail.putExtra("ProductId", adapter.getRef(position).getKey());
+                        startActivity(drinkDetail);
+                    }
+                });
+
+                viewHolder.reviewProduct.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        productId = adapter.getRef(position).getKey();
+                        showRatingDialog();
+                    }
+                });
+
+            }
+        };
+
+        //Set Adapter
+        recyclerView.setAdapter(adapter);
     }
 
     private void loadMenu() {
