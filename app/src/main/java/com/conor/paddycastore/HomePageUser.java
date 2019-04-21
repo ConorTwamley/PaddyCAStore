@@ -50,7 +50,8 @@ public class HomePageUser extends AppCompatActivity
     RecyclerView.LayoutManager manufacturerLayout;
     RecyclerView.LayoutManager pricelayoutManager;
 
-    Button sortTitle, sortManufacturer, sortPrice;
+    Button sortTitleDesc, sortManufacturerDesc, sortPriceDesc;
+    Button sortTitleAsc, sortManufacturerAsc, sortPriceAsc;
 
     //Firebase
     FirebaseDatabase database;
@@ -67,9 +68,12 @@ public class HomePageUser extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        sortTitle = (Button)findViewById(R.id.sortByTitle);
-        sortManufacturer = (Button)findViewById(R.id.sortByManufacturer);
-        sortPrice = (Button)findViewById(R.id.sortByPrice);
+        sortTitleDesc = (Button)findViewById(R.id.sortByTitle);
+        sortManufacturerDesc = (Button)findViewById(R.id.sortByManufacturer);
+        sortPriceDesc = (Button)findViewById(R.id.sortByPrice);
+        sortTitleAsc = (Button)findViewById(R.id.sortByTitleAsc);
+        sortPriceAsc = (Button)findViewById(R.id.sortByPriceAsc);
+        sortManufacturerAsc = (Button)findViewById(R.id.sortByManufacturerAsc);
 
         //Firebase Init
         database = FirebaseDatabase.getInstance();
@@ -86,36 +90,75 @@ public class HomePageUser extends AppCompatActivity
 
         loadMenu();
 
-        sortTitle.setOnClickListener(new View.OnClickListener() {
+        sortTitleDesc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sortTitleDesc.setVisibility(View.INVISIBLE);
                 mylayoutManager = new LinearLayoutManager(HomePageUser.this);
                 ((LinearLayoutManager) mylayoutManager).setReverseLayout(true);
                 ((LinearLayoutManager) mylayoutManager).setStackFromEnd(true);
                 recyclerView.setLayoutManager(mylayoutManager);
                 loadMenu();
+
+                sortTitleAsc.setVisibility(View.VISIBLE);
+                sortTitleAsc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerView.setLayoutManager(layoutManager);
+                        loadMenu();
+
+                        sortTitleAsc.setVisibility(View.INVISIBLE);
+                        sortTitleDesc.setVisibility(View.VISIBLE);
+                    }
+                });
             }
         });
 
-        sortManufacturer.setOnClickListener(new View.OnClickListener() {
+        sortManufacturerDesc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sortManufacturerDesc.setVisibility(View.INVISIBLE);
+                sortManufacturerAsc.setVisibility(View.VISIBLE);
                 manufacturerLayout = new LinearLayoutManager(HomePageUser.this);
                 ((LinearLayoutManager) manufacturerLayout).setReverseLayout(true);
                 ((LinearLayoutManager) manufacturerLayout).setStackFromEnd(true);
                 recyclerView.setLayoutManager(manufacturerLayout);
-                loadMenuManufacturerAscending();
+                loadMenuManufacturer();
+
+                sortManufacturerAsc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerView.setLayoutManager(layoutManager);
+                        loadMenuManufacturer();
+
+                        sortManufacturerAsc.setVisibility(View.INVISIBLE);
+                        sortManufacturerDesc.setVisibility(View.VISIBLE);
+                    }
+                });
             }
         });
 
-        sortPrice.setOnClickListener(new View.OnClickListener() {
+        sortPriceDesc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sortPriceDesc.setVisibility(View.INVISIBLE);
+                sortPriceAsc.setVisibility(View.VISIBLE);
                 pricelayoutManager = new LinearLayoutManager(HomePageUser.this);
                 ((LinearLayoutManager) pricelayoutManager).setReverseLayout(true);
                 ((LinearLayoutManager) pricelayoutManager).setStackFromEnd(true);
                 recyclerView.setLayoutManager(pricelayoutManager);
-                loadMenuPriceAscending();
+                loadMenuPrice();
+
+                sortPriceAsc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recyclerView.setLayoutManager(layoutManager);
+                        loadMenuPrice();
+
+                        sortPriceAsc.setVisibility(View.INVISIBLE);
+                        sortPriceDesc.setVisibility(View.VISIBLE);
+                    }
+                });
             }
         });
 
@@ -129,7 +172,7 @@ public class HomePageUser extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    private void loadMenuPriceAscending() {
+    private void loadMenuPrice() {
         adapter = new FirebaseRecyclerAdapter<Stock, StockViewHolderUser>(
                 Stock.class,
                 R.layout.stock_item_user,
@@ -171,7 +214,7 @@ public class HomePageUser extends AppCompatActivity
         recyclerView.setAdapter(adapter);
     }
 
-    private void loadMenuManufacturerAscending() {
+    private void loadMenuManufacturer() {
         adapter = new FirebaseRecyclerAdapter<Stock, StockViewHolderUser>(
                 Stock.class,
                 R.layout.stock_item_user,
@@ -218,7 +261,7 @@ public class HomePageUser extends AppCompatActivity
                 Stock.class,
                 R.layout.stock_item_user,
                 StockViewHolderUser.class,
-                stockList
+                stockList.orderByChild("productName")
         ) {
             @Override
             protected void populateViewHolder(StockViewHolderUser viewHolder, Stock model, final int position) {
