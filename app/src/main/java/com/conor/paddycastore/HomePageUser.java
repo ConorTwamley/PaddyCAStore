@@ -19,7 +19,9 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.conor.paddycastore.Common.Common;
+import com.conor.paddycastore.Database.Database;
 import com.conor.paddycastore.Interfaces.ItemClickListener;
+import com.conor.paddycastore.Model.Order;
 import com.conor.paddycastore.Model.Rating;
 import com.conor.paddycastore.Model.Stock;
 import com.conor.paddycastore.ViewHolder.StockViewHolderUser;
@@ -196,6 +198,21 @@ public class HomePageUser extends AppCompatActivity
                         Intent drinkDetail = new Intent(HomePageUser.this, ProductDetail.class);
                         drinkDetail.putExtra("ProductId", adapter.getRef(position).getKey());
                         startActivity(drinkDetail);
+                    }
+                });
+
+                viewHolder.addToCart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new Database(getBaseContext()).addToCart(new Order(
+                                adapter.getRef(position).getKey(),
+                                adapter.getItem(position).getProductName(),
+                                "1",
+                                adapter.getItem(position).getPrice(),
+                                adapter.getItem(position).getImage()
+                        ));
+
+                        Toast.makeText(HomePageUser.this, "Added to Cart", Toast.LENGTH_SHORT).show();
                     }
                 });
 

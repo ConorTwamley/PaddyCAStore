@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.conor.paddycastore.Common.Common;
+import com.conor.paddycastore.Database.Database;
+import com.conor.paddycastore.Model.Order;
 import com.conor.paddycastore.Model.Rating;
 import com.conor.paddycastore.Model.Stock;
 import com.conor.paddycastore.ViewHolder.StockViewHolderUser;
@@ -98,17 +100,15 @@ public class ProductDetail extends AppCompatActivity implements RatingDialogList
         btnAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                new Database(getBaseContext()).addToCart(new Order(
-//                        drinkId,
-//                        currentDrink.getDrinkName(),
-//                        numberButton.getNumber(),
-//                        currentDrink.getDrinkPrice(),
-//                        currentDrink.getDrinkDiscount(),
-//                        currentDrink.getImage(),
-//                        Common.drinkSizeChoice // Added to try and get the type of drink to display in the cart view
-//                ));
-//
-//                Toast.makeText(DrinkDetail.this, currentDrink.getDrinkName() + " added to Cart", Toast.LENGTH_SHORT).show();
+                new Database(getBaseContext()).addToCart(new Order(
+                        productId,
+                        currentProduct.getProductName(),
+                        "1",
+                        currentProduct.getPrice(),
+                        currentProduct.getImage()
+                ));
+
+                Toast.makeText(ProductDetail.this, currentProduct.getProductName() + " added to Cart", Toast.LENGTH_SHORT).show();
             }
         });
 
