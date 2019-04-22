@@ -35,7 +35,9 @@ public class Cart  extends AppCompatActivity {
     DatabaseReference requests;
 
     TextView txtTotalPrice;
-    Button btnPlace;
+    Button btnPlace, btnCancel;
+
+    double total = 0.00d;
 
     List<Order> cart = new ArrayList<>();
 
@@ -58,12 +60,21 @@ public class Cart  extends AppCompatActivity {
 
         txtTotalPrice = (TextView)findViewById(R.id.total);
         btnPlace = (Button)findViewById(R.id.btnPlaceOrder);
+        btnCancel = (Button)findViewById(R.id.btnCancelOrder);
 
         btnPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAlertDialog();
 
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Database(getBaseContext()).cleanCart();
+                Toast.makeText(Cart.this, "Cart deleted please exit the cart to add products back into your basket", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -122,16 +133,21 @@ public class Cart  extends AppCompatActivity {
     private void loadListProducts() {
         cart = new Database(this).getCart();
         adapter = new CartAdapter(cart, this);
+        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
 
         //Calculate the total price
-        int total = 0;
-        for(Order order:cart){
-            total+=(Integer.parseInt(order.getPrice()))*(Integer.parseInt(order.getQuantity()));
-            Locale locale = new Locale("en", "IE");
-            NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
 
-            txtTotalPrice.setText(fmt.format(total));
+        for(Order orders : cart) {
+            double price = Double.parseDouble(orders.getPrice());
+            int quantity = Integer.parseInt(orders.getQuantity());
+            total += price * quantity;
         }
+
+        Locale locale = new Locale("en", "IE");
+        NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
+        txtTotalPrice.setText(fmt.format(total));
+
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 }

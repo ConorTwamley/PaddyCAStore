@@ -205,7 +205,6 @@ public class HomePageUser extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         new Database(getBaseContext()).addToCart(new Order(
-                                adapter.getRef(position).getKey(),
                                 adapter.getItem(position).getProductName(),
                                 "1",
                                 adapter.getItem(position).getPrice(),
@@ -377,6 +376,8 @@ public class HomePageUser extends AppCompatActivity
         if (id == R.id.nav_shop) {
             // Handle the camera action
         } else if (id == R.id.nav_cart) {
+            Intent intent = new Intent(HomePageUser.this, Cart.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_searchTitle) {
             Intent intent = new Intent(HomePageUser.this, SearchProductNameActivity.class);

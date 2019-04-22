@@ -2,7 +2,6 @@ package com.conor.paddycastore.Model;
 
 public class Order {
 
-    private String ProductId;
     private String ProductName;
     private String Quantity;
     private String Price;
@@ -11,20 +10,11 @@ public class Order {
     public Order() {
     }
 
-    public Order( String productId, String productName, String quantity, String price, String image) {
-        ProductId = productId;
+    public Order(String productName, String quantity, String price, String image) {
         ProductName = productName;
         Quantity = quantity;
         Price = price;
         this.image = image;
-    }
-
-    public String getProductId() {
-        return ProductId;
-    }
-
-    public void setProductId(String productId) {
-        ProductId = productId;
     }
 
     public String getProductName() {

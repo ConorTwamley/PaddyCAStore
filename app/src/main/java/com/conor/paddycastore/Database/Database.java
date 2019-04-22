@@ -25,7 +25,7 @@ public class Database extends SQLiteAssetHelper {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         // Added to try and get the type of drink to display in the cart view
-        String[] sqlSelect = {"ProductId", "ProductName", "Quantity", "Price", "Image"};
+        String[] sqlSelect = {"ProductName", "Quantity", "Price", "Image"};
         String sqlTable = "OrderInformation";
 
         qb.setTables(sqlTable);
@@ -35,7 +35,6 @@ public class Database extends SQLiteAssetHelper {
         if(cursor.moveToFirst()){
             do{
                 result.add(new Order(
-                        cursor.getString(cursor.getColumnIndex("ProductId")),
                         cursor.getString(cursor.getColumnIndex("ProductName")),
                         cursor.getString(cursor.getColumnIndex("Quantity")),
                         cursor.getString(cursor.getColumnIndex("Price")),

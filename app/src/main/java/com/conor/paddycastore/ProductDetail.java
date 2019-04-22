@@ -101,7 +101,6 @@ public class ProductDetail extends AppCompatActivity implements RatingDialogList
             @Override
             public void onClick(View v) {
                 new Database(getBaseContext()).addToCart(new Order(
-                        productId,
                         currentProduct.getProductName(),
                         "1",
                         currentProduct.getPrice(),
