@@ -1,5 +1,9 @@
 package com.conor.paddycastore.Model;
 
+import com.conor.paddycastore.StrategyPattern.PaymentStrategy;
+import com.conor.paddycastore.StrategyPattern.PaypalPayment;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Request {
@@ -11,8 +15,8 @@ public class Request {
     private String status;
     private List<Order> products;
 
-    public Request() {
-    }
+    Order order;
+    List<Order> cart = new ArrayList<>();
 
     public Request(String username, String name, String address, String total, List<Order> products) {
         this.username = username;
@@ -21,6 +25,19 @@ public class Request {
         this.total = total;
         this.status = "0";
         this.products = products;
+//        this.pay(paypalPayment);
+    }
+
+    public void pay(PaymentStrategy paymentMethod) {
+        for(Order orders : cart) {
+            double price = Double.parseDouble(orders.getPrice());
+            int quantity = Integer.parseInt(orders.getQuantity());
+            total += price * quantity;
+
+            String totalPrice = String.valueOf(total);
+//            String amount = totalPrice;
+            paymentMethod.pay(totalPrice);
+        }
     }
 
     public String getUsername() {
@@ -70,4 +87,5 @@ public class Request {
     public void setProducts(List<Order> products) {
         this.products = products;
     }
+
 }

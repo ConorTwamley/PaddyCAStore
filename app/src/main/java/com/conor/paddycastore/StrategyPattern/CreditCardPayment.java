@@ -1,4 +1,4 @@
-package com.conor.paddycastore.StrategyrPattern;
+package com.conor.paddycastore.StrategyPattern;
 
 public class CreditCardPayment implements PaymentStrategy {
 
@@ -14,7 +14,12 @@ public class CreditCardPayment implements PaymentStrategy {
         this.dateOfExpiry=expiryDate;
     }
     @Override
-    public void pay(int amount) {
+    public void pay(String amount) {
         System.out.println(amount +" paid with credit/debit card");
     }
+//
+//    @Override
+//    public boolean pay(String amount) {
+//        return true; // if payment goes through
+//    }
 }

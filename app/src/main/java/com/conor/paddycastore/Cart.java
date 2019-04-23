@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,8 @@ import com.conor.paddycastore.Common.Common;
 import com.conor.paddycastore.Database.Database;
 import com.conor.paddycastore.Model.Order;
 import com.conor.paddycastore.Model.Request;
+import com.conor.paddycastore.StrategyPattern.PaymentStrategy;
+import com.conor.paddycastore.StrategyPattern.PaypalPayment;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -33,9 +36,11 @@ public class Cart  extends AppCompatActivity {
 
     FirebaseDatabase database;
     DatabaseReference requests;
+    DatabaseReference payment;
 
+    EditText edtAddress, edtPaypalUsername, edtPaypalPassword;
     TextView txtTotalPrice;
-    Button btnPlace, btnCancel;
+    Button btnPlace, btnCancel, btnCreditCard, btnPaypal;
 
     double total = 0.00d;
 
@@ -51,6 +56,7 @@ public class Cart  extends AppCompatActivity {
         //Firebase
         database = FirebaseDatabase.getInstance();
         requests = database.getReference("Requests");
+        payment = database.getReference("PaymentMethod");
 
         //Init
         recyclerView = (RecyclerView)findViewById(R.id.cartList);
@@ -83,43 +89,41 @@ public class Cart  extends AppCompatActivity {
 
     private void showAlertDialog(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(Cart.this);
-        alertDialog.setTitle("One more step!");
-        alertDialog.setMessage("Enter your address: ");
+        alertDialog.setTitle("How Would you like to pay");
+        alertDialog.setMessage("Please fill in address for delivery");
 
-        final EditText etAddress = new EditText(Cart.this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-        );
+        LayoutInflater inflater = this.getLayoutInflater();
+        View pop_up_dialog = inflater.inflate(R.layout.payment_choice_layout, null);
 
-        etAddress.setLayoutParams(lp);
-        alertDialog.setView(etAddress); //Adds Edit text to alert dialog
-        alertDialog.setIcon(R.drawable.ic_shopping_cart_black_24dp);
+        edtAddress = pop_up_dialog.findViewById(R.id.edtAddress);
+        btnCreditCard = pop_up_dialog.findViewById(R.id.btnCreditCard);
+        btnPaypal = pop_up_dialog.findViewById(R.id.btnPaypal);
 
-        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        //Event for button
+        btnCreditCard.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                //Create a new request
-                Request request = new Request(
-                        Common.currentUser.getUsername(),
-                        Common.currentUser.getName(),
-                        etAddress.getText().toString(),
-                        txtTotalPrice.getText().toString(),
-                        cart
-                );
-
-                //Send to firebase
-                requests.child(String.valueOf(System.currentTimeMillis()))
-                        .setValue(request);
-
-                //delete cart
-                new Database(getBaseContext()).cleanCart();
-                Toast.makeText(Cart.this, "Thank you, Order Placed", Toast.LENGTH_SHORT).show();
-                finish();
+            public void onClick(View v) {
+//                CreditCardPayment(edtAddress);
             }
         });
 
+        btnPaypal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PaypalPayment(edtAddress.getText().toString());
+            }
+        });
+
+        alertDialog.setView(pop_up_dialog);
+        alertDialog.setIcon(R.drawable.ic_account_balance_wallet_black_24dp);
+
+//        //Set button
+        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
         alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -128,7 +132,102 @@ public class Cart  extends AppCompatActivity {
         });
 
         alertDialog.show();
+
+//        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//                showPaymentMethodDialog();
+//
+////                //Create a new request
+////                Request request = new Request(
+////                        Common.currentUser.getUsername(),
+////                        Common.currentUser.getName(),
+////                        etAddress.getText().toString(),
+////                        txtTotalPrice.getText().toString(),
+////                        cart
+////                );
+////
+////                //Send to firebase
+////                requests.child(String.valueOf(System.currentTimeMillis()))
+////                        .setValue(request);
+////
+////                //delete cart
+////                new Database(getBaseContext()).cleanCart();
+////                Toast.makeText(Cart.this, "Thank you, Order Placed", Toast.LENGTH_SHORT).show();
+////                finish();
+//            }
+//        });
     }
+
+    private void PaypalPayment(final String edtAddress) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Cart.this);
+        alertDialog.setTitle("Paypal Form");
+        alertDialog.setMessage("Please fill in full information");
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View paypal_dialog = inflater.inflate(R.layout.paypal_layout, null);
+
+        edtPaypalUsername = paypal_dialog.findViewById(R.id.edtPaypalUsername);
+        edtPaypalPassword = paypal_dialog.findViewById(R.id.edtPaypalPassword);
+
+        alertDialog.setView(paypal_dialog);
+        alertDialog.setIcon(R.drawable.ic_payment_black_24dp);
+
+//        //Set button
+        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                //Create a new request
+                Request request = new Request(
+                        Common.currentUser.getUsername(),
+                        Common.currentUser.getName(),
+                        edtAddress,
+                        txtTotalPrice.getText().toString(),
+                        cart
+//                        paypal = new PaypalPayment(edtPaypalUsername.getText().toString(),
+//                                edtPaypalPassword.getText().toString())
+//                        PaymentStrategy.pay(new PaypalPayment(
+//                                edtPaypalUsername.getText().toString(),
+//                                edtPaypalPassword.getText().toString()))
+
+                );
+
+                String orderRef = String.valueOf(System.currentTimeMillis());
+
+                //Send to firebase
+                requests.child(orderRef).setValue(request);
+
+                PaypalPayment paypal = new PaypalPayment(
+                        edtPaypalUsername.getText().toString(),
+                        edtPaypalPassword.getText().toString(),
+                        cart,
+                        Common.currentUser.getUsername());
+
+                payment.child(orderRef).setValue(paypal);
+
+                //delete cart
+                new Database(getBaseContext()).cleanCart();
+                Toast.makeText(Cart.this, "Thank you, Order Placed", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+        alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
+
+    }
+
+    private void CreditCardPayment() {
+    }
+
 
     private void loadListProducts() {
         cart = new Database(this).getCart();
