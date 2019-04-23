@@ -19,8 +19,12 @@ import com.conor.paddycastore.Common.Common;
 import com.conor.paddycastore.Database.Database;
 import com.conor.paddycastore.Model.Order;
 import com.conor.paddycastore.Model.Request;
+import com.conor.paddycastore.StrategyPattern.CreditCardPayment;
 import com.conor.paddycastore.StrategyPattern.PaymentStrategy;
 import com.conor.paddycastore.StrategyPattern.PaypalPayment;
+import com.craftman.cardform.Card;
+import com.craftman.cardform.CardForm;
+import com.craftman.cardform.OnPayBtnClickListner;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -47,6 +51,9 @@ public class Cart  extends AppCompatActivity {
     List<Order> cart = new ArrayList<>();
 
     CartAdapter adapter;
+    CardForm cardForm;
+    TextView txtDes;
+    Button btnPay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +110,7 @@ public class Cart  extends AppCompatActivity {
         btnCreditCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                CreditCardPayment(edtAddress);
+                CreditCardPayment(edtAddress.getText().toString());
             }
         });
 
@@ -133,31 +140,6 @@ public class Cart  extends AppCompatActivity {
 
         alertDialog.show();
 
-//        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//
-//                showPaymentMethodDialog();
-//
-////                //Create a new request
-////                Request request = new Request(
-////                        Common.currentUser.getUsername(),
-////                        Common.currentUser.getName(),
-////                        etAddress.getText().toString(),
-////                        txtTotalPrice.getText().toString(),
-////                        cart
-////                );
-////
-////                //Send to firebase
-////                requests.child(String.valueOf(System.currentTimeMillis()))
-////                        .setValue(request);
-////
-////                //delete cart
-////                new Database(getBaseContext()).cleanCart();
-////                Toast.makeText(Cart.this, "Thank you, Order Placed", Toast.LENGTH_SHORT).show();
-////                finish();
-//            }
-//        });
     }
 
     private void PaypalPayment(final String edtAddress) {
@@ -200,7 +182,7 @@ public class Cart  extends AppCompatActivity {
                 //Send to firebase
                 requests.child(orderRef).setValue(request);
 
-                PaypalPayment paypal = new PaypalPayment(
+                PaymentStrategy paypal = new PaypalPayment(
                         edtPaypalUsername.getText().toString(),
                         edtPaypalPassword.getText().toString(),
                         cart,
@@ -210,7 +192,7 @@ public class Cart  extends AppCompatActivity {
 
                 //delete cart
                 new Database(getBaseContext()).cleanCart();
-                Toast.makeText(Cart.this, "Thank you, Order Placed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "Thank you, Order Placed", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -225,7 +207,64 @@ public class Cart  extends AppCompatActivity {
 
     }
 
-    private void CreditCardPayment() {
+    private void CreditCardPayment(final String address) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Cart.this);
+        alertDialog.setTitle("How Would you like to pay");
+        alertDialog.setMessage("Please fill in address for delivery");
+        LayoutInflater inflater = this.getLayoutInflater();
+        View pop_up_dialog = inflater.inflate(R.layout.credit_card_layout, null);
+
+        cardForm = (CardForm) pop_up_dialog.findViewById(R.id.card_form);
+        txtDes = (TextView)pop_up_dialog.findViewById(R.id.payment_amount_holder);
+        btnPay = (Button)pop_up_dialog.findViewById(R.id.btn_pay);
+
+        txtDes.setText(txtTotalPrice.getText().toString());
+        btnPay.setText(String.format("Payer %s", txtDes.getText()));
+
+        cardForm.setPayBtnClickListner(new OnPayBtnClickListner() {
+            @Override
+            public void onClick(Card card) {
+                Toast.makeText(Cart.this, "Number: "+card.getNumber() + " | CVC: " + card.getCVC(),
+                        Toast.LENGTH_SHORT).show();
+
+                //Create a new request
+                Request request = new Request(
+                        Common.currentUser.getUsername(),
+                        Common.currentUser.getName(),
+                        address,
+                        txtTotalPrice.getText().toString(),
+                        cart
+                );
+
+                CreditCardPayment creditCardPayment = new CreditCardPayment(
+                        card.getName(),
+                        card.getNumber(),
+                        card.getCVC(),
+                        card.getExpMonth().toString(),
+                        card.getExpYear().toString(),
+                        cart,
+                        txtTotalPrice.getText().toString()
+                );
+
+                String orderRef = String.valueOf(System.currentTimeMillis());
+
+                //Send to firebase
+                requests.child(orderRef).setValue(request);
+
+                payment.child(orderRef).setValue(creditCardPayment);
+
+                //delete cart
+                new Database(getBaseContext()).cleanCart();
+                Toast.makeText(getBaseContext(), "Thank you, Order Placed", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+        alertDialog.setView(pop_up_dialog);
+        alertDialog.setIcon(R.drawable.ic_account_balance_wallet_black_24dp);
+
+        alertDialog.show();
+
     }
 
 

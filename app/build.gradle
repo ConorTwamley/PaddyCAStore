@@ -49,5 +49,7 @@ dependencies {
     implementation 'com.github.mancj:MaterialSearchBar:0.7.1'
     implementation 'com.stepstone.apprating:app-rating:2.0.0'
 
+    implementation 'com.craftman.cardform:cardform:0.0.2'
+
 }
 apply plugin: 'com.google.gms.google-services'

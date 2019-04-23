@@ -9,13 +9,13 @@ public class PaypalPayment implements PaymentStrategy {
 
     String emailId;
     String password;
-    List<Order> key;
+    List<Order> cart;
     String name;
 
-    public PaypalPayment(String email, String pwd, List<Order> key, String name){
+    public PaypalPayment(String email, String pwd, List<Order> cart, String name){
         this.emailId=email;
         this.password=pwd;
-        this.key = key;
+        this.cart = cart;
         this.name = name;
     }
 

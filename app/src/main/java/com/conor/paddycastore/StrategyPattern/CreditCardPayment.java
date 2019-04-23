@@ -1,18 +1,29 @@
 package com.conor.paddycastore.StrategyPattern;
 
+import com.conor.paddycastore.Model.Order;
+
+import java.util.List;
+
 public class CreditCardPayment implements PaymentStrategy {
 
-    private String name;
-    private String cardNumber;
-    private String cvv;
-    private String dateOfExpiry;
+    String name;
+    String cardNumber;
+    String cvv;
+    String dateOfExpiryMonth;
+    String dateOfExpiryYear;
+    String total;
+    List<Order> cart;
 
-    public CreditCardPayment(String nameCard, String ccNum, String cvv, String expiryDate){
-        this.name=nameCard;
-        this.cardNumber=ccNum;
-        this.cvv=cvv;
-        this.dateOfExpiry=expiryDate;
+    public CreditCardPayment(String name, String cardNumber, String cvv, String dateOfExpiryMonth, String dateOfExpiryYear, List<Order> cart, String total) {
+        this.name = name;
+        this.cardNumber = cardNumber;
+        this.cvv = cvv;
+        this.dateOfExpiryMonth = dateOfExpiryMonth;
+        this.dateOfExpiryYear = dateOfExpiryYear;
+        this.cart =  cart;
+        this.total = total;
     }
+
     @Override
     public void pay(String amount) {
         System.out.println(amount +" paid with credit/debit card");
