@@ -1,6 +1,7 @@
 package com.conor.paddycastore;
 
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,8 +26,11 @@ import com.conor.paddycastore.StrategyPattern.PaypalPayment;
 import com.craftman.cardform.Card;
 import com.craftman.cardform.CardForm;
 import com.craftman.cardform.OnPayBtnClickListner;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -40,6 +44,7 @@ public class Cart  extends AppCompatActivity {
 
     FirebaseDatabase database;
     DatabaseReference requests;
+    DatabaseReference stock;
     DatabaseReference payment;
 
     EditText edtAddress, edtPaypalUsername, edtPaypalPassword;
@@ -47,6 +52,7 @@ public class Cart  extends AppCompatActivity {
     Button btnPlace, btnCancel, btnCreditCard, btnPaypal;
 
     double total = 0.00d;
+    int stockLevel;
 
     List<Order> cart = new ArrayList<>();
 
@@ -64,6 +70,7 @@ public class Cart  extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         requests = database.getReference("Requests");
         payment = database.getReference("PaymentMethod");
+        stock = database.getReference("Stock");
 
         //Init
         recyclerView = (RecyclerView)findViewById(R.id.cartList);
@@ -169,24 +176,22 @@ public class Cart  extends AppCompatActivity {
                         edtAddress,
                         txtTotalPrice.getText().toString(),
                         cart
-//                        paypal = new PaypalPayment(edtPaypalUsername.getText().toString(),
-//                                edtPaypalPassword.getText().toString())
-//                        PaymentStrategy.pay(new PaypalPayment(
-//                                edtPaypalUsername.getText().toString(),
-//                                edtPaypalPassword.getText().toString()))
-
                 );
-
-                String orderRef = String.valueOf(System.currentTimeMillis());
-
-                //Send to firebase
-                requests.child(orderRef).setValue(request);
 
                 PaymentStrategy paypal = new PaypalPayment(
                         edtPaypalUsername.getText().toString(),
                         edtPaypalPassword.getText().toString(),
                         cart,
-                        Common.currentUser.getUsername());
+                        Common.currentUser.getUsername()
+                );
+
+//                Order order = new Order();
+//                order.adjustQuantity();
+
+                String orderRef = String.valueOf(System.currentTimeMillis());
+
+                //Send to firebase
+                requests.child(orderRef).setValue(request);
 
                 payment.child(orderRef).setValue(paypal);
 

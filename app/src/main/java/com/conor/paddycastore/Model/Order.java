@@ -6,6 +6,7 @@ public class Order {
     private String Quantity;
     private String Price;
     private String image;
+    private String newQuantity;
 
     public Order() {
     }
@@ -15,6 +16,7 @@ public class Order {
         Quantity = quantity;
         Price = price;
         this.image = image;
+//        adjustQuantity();
     }
 
     public String getProductName() {
@@ -47,5 +49,14 @@ public class Order {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String adjustQuantity() {
+        int quanity = Integer.parseInt(Quantity);
+        int newQuantity = quanity - 1;
+
+        String newStockLevel = String.valueOf(newQuantity);
+
+        return newStockLevel;
     }
 }

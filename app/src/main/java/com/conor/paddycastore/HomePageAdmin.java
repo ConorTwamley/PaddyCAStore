@@ -300,6 +300,9 @@ public class HomePageAdmin extends AppCompatActivity
 
         } else if (id == R.id.nav_orders) {
 
+            Intent intent = new Intent(HomePageAdmin.this, ViewOrders.class);
+            startActivity(intent);
+
         } else if (id == R.id.nav_searchCustomers) {
 
             Intent intent = new Intent(HomePageAdmin.this, SearchCustomers.class);
