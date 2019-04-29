@@ -39,25 +39,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder>{
         return new CartViewHolder(itemView);
     }
 
-//    @Override
-//    public void onBindViewHolder(@NonNull final CartViewHolder cartViewHolder, final int position) {
-//
-//        Picasso.with(cart).load(listData.get(position).getImage())
-//                .resize(70,70)
-//                .centerCrop()
-//                .into(cartViewHolder.cart_image);
-//
-//        TextDrawable drawable = TextDrawable.builder()
-//                .buildRound(""+ listData.get(position).getQuantity(), Color.RED);
-//
-//        Locale locale = new Locale("en", "IE");
-//        NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
-//        int price = (Integer.parseInt(listData.get(position).getPrice()));
-//
-//        cartViewHolder.txt_price.setText(fmt.format(price));
-////        cartViewHolder.txt_price.setText(listData.get(position).getPrice());
-//        cartViewHolder.txt_cart_name.setText(listData.get(position).getProductName());
-//    }
     @Override
     public void onBindViewHolder(@NonNull final CartViewHolder cartViewHolder, final int position) {
 
@@ -82,18 +63,4 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder>{
         return listData.size();
     }
 
-    public Order getItem(int position)
-    {
-        return listData.get(position);
-    }
-
-    public void removeItem(int position) {
-        listData.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    public void restoreItem(Order item,int position) {
-        listData.add(position, item);
-        notifyItemInserted(position);
-    }
 }

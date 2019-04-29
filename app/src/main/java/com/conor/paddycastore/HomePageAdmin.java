@@ -307,9 +307,6 @@ public class HomePageAdmin extends AppCompatActivity
 
             Intent intent = new Intent(HomePageAdmin.this, SearchCustomers.class);
             startActivity(intent);
-
-        } else if (id == R.id.nav_searchPrevOrders) {
-
         } else if (id == R.id.nav_log_out) {
             Intent logout = new Intent(HomePageAdmin.this, MainActivity.class);
             logout.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

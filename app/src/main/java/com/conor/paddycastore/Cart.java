@@ -52,7 +52,6 @@ public class Cart  extends AppCompatActivity {
     Button btnPlace, btnCancel, btnCreditCard, btnPaypal;
 
     double total = 0.00d;
-    int stockLevel;
 
     List<Order> cart = new ArrayList<>();
 
@@ -185,9 +184,6 @@ public class Cart  extends AppCompatActivity {
                         Common.currentUser.getUsername()
                 );
 
-//                Order order = new Order();
-//                order.adjustQuantity();
-
                 String orderRef = String.valueOf(System.currentTimeMillis());
 
                 //Send to firebase
@@ -271,7 +267,6 @@ public class Cart  extends AppCompatActivity {
         alertDialog.show();
 
     }
-
 
     private void loadListProducts() {
         cart = new Database(this).getCart();
